@@ -1,5 +1,6 @@
 'use strict';
-import $ from 'jquery'
+//import $ './jquery';
+document.write(”<script language=javascript src=’./js/jquery.js’></script>”);
 function tar (){
 	$(".img-list li").remove("li");
 	var filechooser = document.getElementById("choose");
