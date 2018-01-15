@@ -129,6 +129,42 @@ const diffTime = item => {
     }
     return descTime;
 };
+
+/**
+ * 格式化时间当天显示时间
+ * 昨天显示昨天
+ * 前天显示前天
+ * 
+ */
+const datatime = time =>{	
+		var date = (typeof time === 'number') ? new Date(time) : new Date((time || '').replace(/-/g, '/'))
+	    var diff = (((new Date()).getTime() - date.getTime()) / 1000)
+	    var dayDiff = Math.floor(diff / 86400)
+	    var oneDay = new Date().getDate() - date.getDate();
+	    var isValidDate = Object.prototype.toString.call(date) === '[object Date]' && !isNaN(date.getTime())
+	
+	    if (!isValidDate) {
+	        console.error('not a valid date')
+	        return time
+	    }
+	
+	        var today = new Date(date)
+	        var year = today.getFullYear()
+	        var month = ('0' + (today.getMonth() + 1)).slice(-2)
+	        var day = ('0' + today.getDate()).slice(-2)
+	        var hour = ('0' + today.getHours()).slice(-2)
+	        var minute = ('0'+today.getMinutes()).slice(-2)
+	    if (isNaN(dayDiff) || dayDiff < 0 || dayDiff >= 3) {
+	        return `${year}-${month}-${day}`
+	    }
+	        return (dayDiff === 0 && oneDay===0 ) && (
+	            diff < 86400 && `${hour}:${minute}`
+	            ) ||
+	            (dayDiff < 2&& oneDay<2) && '昨天'||
+	            (dayDiff < 3 && oneDay<3) && '前天'||
+	            oneDay >=3 && `${year}-${month}-${day}`
+}		
+
 /**
  *   功能:实现VBScript的DateAdd功能.
  *   参数:interval,字符串表达式，表示要添加的时间间隔.
@@ -232,7 +268,8 @@ export {
     ISO8601_FORMAT,
     ISO8601_WITH_TZ_OFFSET_FORMAT,
     DATETIME_FORMAT,
-    ABSOLUTETIME_FORMAT
+    ABSOLUTETIME_FORMAT,
+    datatime
 };
 
 export default {
@@ -243,5 +280,6 @@ export default {
     ISO8601_FORMAT,
     ISO8601_WITH_TZ_OFFSET_FORMAT,
     DATETIME_FORMAT,
-    ABSOLUTETIME_FORMAT
+    ABSOLUTETIME_FORMAT,
+    datatime
 };
