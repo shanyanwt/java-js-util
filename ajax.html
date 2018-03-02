@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	  <meta charset="utf-8">
+	  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	  <title>原生ajax封装</title>
+	  <script>
+	    //将对象序列化
+	    function params(data) {
+	      var arr = [];
+	      for (var i in data) {
+	        arr.push(encodeURIComponent(i) + '=' + encodeURIComponent(data[i]));
+	      }
+	      return arr.join('&');
+	    }
+	    //封装ajax
+	    function ajax(obj) {
+	      //创建xhr对象;
+	      var xhr = new XMLHttpRequest();
+	      //后面随机数防止浏览器缓存
+//	      obj.url = obj.url + "?rand=" + Math.random();
+	      //序列化对象
+	      //当是get请求时
+	      if (obj.method == 'get') {
+	      	obj.data = params(obj.data);
+	        //当前面没设置随机数时
+	        obj.url += obj.url.indexOf('?') == -1 ? '?' +obj.data : '&' + obj.data;
+	      }
+	      //异步调用
+	      if (obj.async == true) {
+	        //监听响应状态
+	        xhr.onreadystatechange = function() {
+	          if (xhr.readyState == 4) {
+	            callback();
+	          }
+	        };
+	      }
+	      //启动HTTP请求
+	      xhr.open(obj.method, obj.url, obj.aysnc);
+	      //当是post请求时
+	      if(obj.method == 'post') {
+	        //模仿表单提交
+//	        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+	        //json传惨
+	        xhr.setRequestHeader('Content-Type', 'application/json');
+	        xhr.setRequestHeader('application_name', 'WMW');
+	        //发送HTTP请求-post
+	        xhr.send(JSON.stringify(obj.data));
+	      } else {
+	        //发送HTTP请求-get
+	        xhr.send(null);
+	      }
+	      //同步调用
+	      if (obj.async == false) {
+	        callback();
+	      }
+	      //回调函数传参
+	      function callback() {
+	        if (xhr.status == 200) {
+	          obj.success(xhr.responseText);
+	        } else {
+	          alert("失败，失败状态码：" + xhr.status);
+	        }
+	      }
+	    }
+	    function get() {
+	      ajax({
+	        method: 'post',
+	        url: 'http://192.168.10.106:5555/operation/operation/v1/affiche/list',
+	        data: {
+	        	"article_type":2,
+	        	"sort_arrow":1,
+	        	"article_id":216
+	        },
+	        async : true,
+	        success: function(text) {
+	          alert(text);
+	        }
+	      });
+	    }
+	  </script>
+	</head>
+	<body>
+		<button onclick="get()">获取</button>
+	</body>
+</html>
