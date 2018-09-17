@@ -212,3 +212,19 @@ function compress(img) {
 };
 
 export { tar};
+
+
+/**
+ * 图片压缩过滤器
+ * @param  {[type]} value =             ''  [图片路径]
+ * @param  {[type]} size  =             100 [图片尺寸]
+ * @return {[type]}       [压缩或者不压缩的图片路径]
+ */
+export const imageSizeFilter = (value = '', size = 360) => {
+    let reg = /_\d{0,3}.(png|jpe?g|gif|svg)$/; // 避免重复处理导致路径不正确
+    if (value.indexOf('http:') === 0 && !reg.test(value)) {
+        let suffix = value.substring(value.lastIndexOf('.'));
+        return `${value}_${size}${suffix}`;
+    }
+    return value;
+};
